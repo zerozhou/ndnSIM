@@ -80,7 +80,7 @@ int main(int argc, char* argv[])
     
     mobility.Install(wifiNode);
 
-    NS_LOG_DEBUG("testi----1\n");
+    NS_LOG_DEBUG("test----1\n");
     
     MobilityHelper mobilityAP1, mobilityAP2;
     
@@ -95,22 +95,26 @@ int main(int argc, char* argv[])
 
 // In the below, we will accomplish network layer and application layer
     
-    NS_LOG_DEBUG("44444444\n");
+    NS_LOG_DEBUG("test----2\n");
     ndn::StackHelper ndnHelper;
     /*
     // Ptr<NetDevice> netDevice_wifi = wifi.Install(py, mac, wifiNodes);
     Ptr<NetDevice> NetDevice_wifi = wifiNode->GetDevice(0);//获取网卡
     Ptr<ndn::NetDeviceFace> face_wifi = CreateObject<ndn::NetDeviceFace>(wifiNode, NetDevice_wifi);//获取网卡上的接口
     */
+/*
+    Ptr<NetDevice> NetDevice_wifi = wifiNode->GetDevice(0);//获取网卡
     Ptr<ndn::L3Protocol> ndn = wifiNode->GetObject<ndn::L3Protocol>();
-    Ptr<ndn::Face> face = ndn->GetFace(0);  //error, invild conversion from ...to ... the faceID =0, or  = 1,2,3.
-    ndnHelper.AddRoute("Node0", "/prefix", face, 1);
+    //Ptr<ndn::Face> face = ndn->GetFace(0);  //error, invild conversion from ...to ... the faceID =0, or  = 1,2,3.
+    Ptr<ndn::NetDeviceFace> face = ndnHelper.DefaultNetDeviceCallback(wifiNode, ndn, NetDevice_wifi);
+*/
+    ndnHelper.AddRoute("Node0", "/prefix", 1, 1);//第三个参数是uint32_t 类型
     ndnHelper.AddRoute("Node1", "/prefix", "Node2" , 1);
     
-    NS_LOG_DEBUG("44444444\n");
-
-    ndnHelper.SetDefaultRoutes(true);
-    ndnHelper.InstallAll();
+    NS_LOG_DEBUG("test----3\n");
+    NS_LOG_DEBUG(wifiNode->GetNDevices());
+    //ndnHelper.SetDefaultRoutes(true);
+    //ndnHelper.InstallAll();
     /*
     ndn::GlobalRoutingHelper ndnGlobalRoutingHelper;
     //ndnGlobalRoutingHelper.InstallAll();
@@ -122,11 +126,11 @@ int main(int argc, char* argv[])
     ndnGlobalRoutingHelper.Install("Node8");
 */
 
-    NS_LOG_DEBUG("44444444\n");
+    NS_LOG_DEBUG("test----4\n");
 //    Ptr<Node> consumer = wifiNodes.Get(0);
     ndn::AppHelper consumerHelper("ns3::ndn::ConsumerCbr");
 
-    NS_LOG_DEBUG("333333\n");
+    NS_LOG_DEBUG("test----5\n");
     consumerHelper.SetPrefix("/prefix");
     consumerHelper.SetAttribute("Frequency", StringValue("10"));
     consumerHelper.Install (wifiNode);
@@ -138,7 +142,7 @@ int main(int argc, char* argv[])
     producerHelper.SetAttribute("PayloadSize", StringValue("1024"));
     producerHelper.Install(Names::Find<Node>("Node1"));
 
-    NS_LOG_DEBUG("55555\n");
+    NS_LOG_DEBUG("test----6\n");
     //ndnGlobalRoutingHelper.AddOrigins ( "/prefix", Names::Find<Node>("Node8"));
     //ndn::GlobalRoutingHelper::CalculateRoutes();
     /*
