@@ -26,34 +26,41 @@ int main(int argc, char* argv[])
     CommandLine cmd;
     cmd.Parse(argc, argv);
     
-    NS_LOG_DEBUG("11111\n");
-
-    AnnotatedTopologyReader topoReader("", 25);
+  /*  AnnotatedTopologyReader topoReader("", 25);
     topoReader.SetFileName("topo/node3.txt");
     topoReader.Read();
-    
-    //wifi
-    Ptr<Node> wifiNode = Names::Find<Node>("Node0");
-    //wifiNodes.Create(1);
-    Ptr<Node> wifiApNode1=Names::Find<Node>("Node1");
-    Ptr<Node> wifiApNode2=Names::Find<Node>("Node2");
+    */
 
-    
-    NS_LOG_DEBUG("testi----0\n");  //ok in the above
-    YansWifiChannelHelper channel=YansWifiChannelHelper::Default();
-    YansWifiPhyHelper phy= YansWifiPhyHelper::Default();
+    //wifi
+    //Ptr<Node> wifiNode = Names::Find<Node>("Node0");
+    NodeContainer ApNodes, wifiNode;
+    wifiNode.Create(1);
+
+    ApNodes.Create(2);
+    //wifiNodes.Create(1);
+    //Ptr<Node> wifiApNode1=Names::Find<Node>("Node1");
+    //Ptr<Node> wifiApNode2=Names::Find<Node>("Node2");
+
+    //初始化信道
+    YansWifiChannelHelper channel;
+    channel = YansWifiChannelHelper::Default();
+    channel.SetPropagationDelay("ns3::ConstantSpeedProgationDelayModel");
+    channel.AddPropagationLoss("ns3::FixedRssLossModel", "Rss", "DoubleValue(rss)");
+
+    //phy layer
+    YansWifiPhyHelper phy;
+    phy = YansWifiPhyHelper::Default();
     phy.SetChannel(channel.Create());
 
     WifiHelper wifi = WifiHelper::Default();
     wifi.SetRemoteStationManager("ns3::AarfWifiManager");
     
+    // mac layer
     NqosWifiMacHelper mac = NqosWifiMacHelper::Default();
     Ssid ssid = Ssid("ns-3-ssid");
-
-    //install NetDevice in wifiNodes and wifiApNodes
     mac.SetType("ns3::StaWifiMac", "Ssid", SsidValue(ssid), "ActiveProbing", BooleanValue(false));
-
-    NS_LOG_DEBUG("2-2-2-2-2--2\n");//ok in the above
+    
+    //net device
     NetDeviceContainer staDevices;
     staDevices=wifi.Install(phy, mac, wifiNode);
     // Ptr<NetDevice> netDevice_wifi = wifi.Install(py, mac, wifiNodes);
